@@ -10,10 +10,14 @@ const player1 = new Player(3, 5, {
     left: 'ArrowLeft',
 });
 
-game.registerPlayer(player1);
-
-player1.move({
-    columns: 1,
-    rows: 3
+const player2 = new Player(2, 6, {
+    up: 'w',
+    right: 'd',
+    down: 's',
+    left: 'a',
 });
+
+game.registerPlayer(player1);
+game.registerPlayer(player2);
+
 

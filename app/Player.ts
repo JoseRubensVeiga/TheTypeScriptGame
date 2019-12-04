@@ -1,3 +1,4 @@
+import { KeyboardListener } from './KeyBoardListener';
 import { Observer } from './Observer';
 import { MovePlayer } from './interfaces/MovePlayer.interface';
 import { KeyboardKeys } from './interfaces/KeyboardKeys.interface';
@@ -22,6 +23,9 @@ export class Player {
 
         this.player.style.gridColumn = this.validateRow(row).toString();
         this.player.style.gridRow = this.validateColumn(column).toString();
+
+        this.setPlayerObserver();
+        this.subscribeKeyboardListener();
     }
 
     setPlayerObserver() {
@@ -37,6 +41,11 @@ export class Player {
     getPlayerObserver() {
         return this.observer;
     };
+
+    subscribeKeyboardListener(): void {
+        const keyboardListener = new KeyboardListener()
+        keyboardListener.getObservable().addObserver(this.getPlayerObserver());
+    }
 
     validateColumn(column: number): number {
         return (column <= 0) ? 1 : ((column <= GAME_COLUMNS ) ? column : GAME_COLUMNS);
