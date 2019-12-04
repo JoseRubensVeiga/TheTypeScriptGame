@@ -19,5 +19,3 @@ const player2 = new Player(2, 6, {
 
 game.registerPlayer(player1);
 game.registerPlayer(player2);
-
-
