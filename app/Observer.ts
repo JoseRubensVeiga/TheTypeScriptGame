@@ -8,4 +8,5 @@ export class Observer {
     notify(data: any[] | {}) {
         this.notifyFn(data);
     }
+
 }

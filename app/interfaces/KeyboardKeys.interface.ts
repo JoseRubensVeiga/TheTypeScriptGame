@@ -3,4 +3,5 @@ export interface KeyboardKeys {
     right: string;
     down: string;
     left: string;
+    shoot: string;
 }

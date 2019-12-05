@@ -4,19 +4,35 @@ import { MovePlayer } from './interfaces/MovePlayer.interface';
 import { KeyboardKeys } from './interfaces/KeyboardKeys.interface';
 
 import { GAME_COLUMNS, GAME_ROWS } from './enviroment';
+import { Observable } from './Observable';
 
 export class Player {
+    moveKeys: any;
     keys: any;
+    shootKey: string;
+    lastMovement: string = 'ArrowRight';
     player: HTMLElement;
     observer: Observer;
+    shootObservable = new Observable();
+    keyboardListener: KeyboardListener;
 
-    constructor(column: number, row: number, playerKeys: KeyboardKeys) {
-        this.keys = {
+    constructor(
+        keyboardListener: KeyboardListener,
+        column: number,
+        row: number,
+        playerKeys: KeyboardKeys
+    ) {
+        this.keyboardListener = keyboardListener;
+        this.moveKeys = {
             [playerKeys.up]: {rows: -1},
             [playerKeys.right]: {columns: 1},
             [playerKeys.down]: {rows: 1},
-            [playerKeys.left]: {columns: -1},
+            [playerKeys.left]: {columns: -1}
         };
+
+        this.shootKey = playerKeys.shoot;
+
+        this.keys = playerKeys;
 
         this.player = document.createElement('div');
         this.player.classList.add('player');
@@ -30,12 +46,34 @@ export class Player {
 
     setPlayerObserver() {
         this.observer = new Observer((args: any) => {
-            const keys = this.getKeys();
-        
-            if(keys[args]) {
-                this.move(keys[args]);
+            if(this.moveKeys[args]) {
+                this.move(this.moveKeys[args]);
+
+                this.lastMovement = args;
+            }
+
+            if(args === this.shootKey) {
+
+                const directions = Object.keys(this.keys)
+                const direction = directions.filter(key => this.keys[key] === this.lastMovement);
+
+                const data = {
+                    direction: direction[0],
+                    row: this.getActiveRow(),
+                    column: this.getActiveColumn(),
+                    player: this
+                };
+                this.shootBullet(data);
             }
         })
+    }
+
+    getShootBullet(): Observable {
+        return this.shootObservable;
+    }
+
+    shootBullet(data: {}): void {
+        this.shootObservable.emit(data);
     }
 
     getPlayerObserver() {
@@ -43,8 +81,7 @@ export class Player {
     };
 
     subscribeKeyboardListener(): void {
-        const keyboardListener = new KeyboardListener()
-        keyboardListener.getObservable().addObserver(this.getPlayerObserver());
+        this.keyboardListener.getObservable().addObserver(this.getPlayerObserver());
     }
 
     validateColumn(column: number): number {
@@ -60,12 +97,20 @@ export class Player {
     };
 
     getKeys() {
-        return this.keys;
+        return this.moveKeys;
     };
 
+    getActiveRow(): number {
+        return parseInt(this.player.style.getPropertyValue('grid-row').split(" ")[0]);
+    }
+
+    getActiveColumn(): number {
+        return parseInt(this.player.style.getPropertyValue('grid-column').split(" ")[0]);
+    }
+
     move(move: MovePlayer) {
-        const row = parseInt(this.player.style.getPropertyValue('grid-row').split(" ")[0]);
-        const column = parseInt(this.player.style.getPropertyValue('grid-column').split(" ")[0]);
+        const row = this.getActiveRow();
+        const column = this.getActiveColumn();
 
         const newRow = row + (move.rows || 0);
         const newColumn = column + (move.columns || 0);

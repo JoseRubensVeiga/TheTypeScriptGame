@@ -8,4 +8,14 @@
 
 .player {
     background-color: black;
+    float: left;
+}
+
+
+.bullet {
+    background-color: red;
+    height: 10px;
+    width: 10px;
+    margin: auto auto;
+    border-radius: 50%;
 }
