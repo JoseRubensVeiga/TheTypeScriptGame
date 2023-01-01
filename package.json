@@ -13,12 +13,12 @@
     "npm": "^6.13.2",
     "run": "^1.4.0",
     "serve": "^11.2.0",
-    "webpack": "^4.41.2",
+    "webpack": "^5.75.0",
     "serialize-javascript": ">=2.1.1"
   },
   "devDependencies": {
-    "ts-loader": "^6.2.1",
+    "ts-loader": "^9.4.2",
     "typescript": "^3.7.3",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^5.0.1"
   }
 }
